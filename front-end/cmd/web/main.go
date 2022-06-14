@@ -19,6 +19,7 @@ func main() {
 	}
 }
 
+//render() use golanf template library to render simple web app using partials
 func render(w http.ResponseWriter, t string) {
 
 	partials := []string{
@@ -30,10 +31,11 @@ func render(w http.ResponseWriter, t string) {
 	var templateSlice []string
 	templateSlice = append(templateSlice, fmt.Sprintf("./cmd/web/templates/%s", t))
 
-	for _, x := range partials {
-		templateSlice = append(templateSlice, x)
-	}
-
+	// for _, x := range partials {
+	// 	templateSlice = append(templateSlice, x)
+	// }
+	//the above for loop is the old way to do
+	templateSlice = append(templateSlice, partials...)
 	tmpl, err := template.ParseFiles(templateSlice...)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

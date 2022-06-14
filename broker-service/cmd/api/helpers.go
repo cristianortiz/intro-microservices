@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-//to send back response as a JSON
+//struct to send back response as a JSON
 type jsonResponse struct {
 	Error   bool   `json:"error"`
 	Message string `json:"message"`
