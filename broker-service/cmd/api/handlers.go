@@ -2,14 +2,16 @@ package main
 
 import (
 	"net/http"
+	"toolbox"
 )
 
 //Broker handle function
 func (app *Config) Broker(w http.ResponseWriter, r *http.Request) {
-	payload := jsonResponse{
+	var tools toolbox.Tools
+
+	payload := toolbox.JSONResponse{
 		Error:   false,
 		Message: "hiting the  Broker..",
 	}
-	_ = app.writeJSON(w, http.StatusOK, payload)
-
+	_ = tools.WriteJSON(w, http.StatusOK, payload)
 }

@@ -41,16 +41,14 @@ func main() {
 		Addr:    fmt.Sprintf(":%s", webPort),
 		Handler: app.routes(),
 	}
-
 	//start the server
 	err := srv.ListenAndServe()
 	if err != nil {
 		log.Panic(err)
 	}
-
 }
 
-//openDB take a string connection and start  connection to postgres DB,
+//openDB take a string connection and start connection to postgres DB,
 func openDB(dsn string) (*sql.DB, error) {
 	db, err := sql.Open("pgx", dsn)
 	if err != nil {
