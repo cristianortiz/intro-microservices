@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"time"
+	"toolbox"
 
 	_ "github.com/jackc/pgconn"
 	_ "github.com/jackc/pgx/v4"
@@ -19,8 +20,10 @@ const webPort = "80"
 var counts int64
 
 type Config struct {
-	DB     *sql.DB
-	Models data.Models
+	DB           *sql.DB
+	Models       data.Models
+	Tools        toolbox.Tools
+	JSONResponse *toolbox.JSONResponse
 }
 
 func main() {
@@ -31,10 +34,12 @@ func main() {
 	if conn == nil {
 		log.Panic("Can't connect to Postgres..")
 	}
+
 	// setup config
 	app := Config{
-		DB:     conn,
-		Models: data.New(conn),
+		DB:           conn,
+		Models:       data.New(conn),
+		JSONResponse: &toolbox.JSONResponse{},
 	}
 	//define the http server
 	srv := &http.Server{

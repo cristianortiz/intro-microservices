@@ -4,14 +4,22 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"toolbox"
 )
 
 const webPort = "80"
 
-type Config struct{}
+type Config struct {
+	Tools        toolbox.Tools
+	JSONResponse *toolbox.JSONResponse
+}
 
 func main() {
-	app := Config{}
+	var tools toolbox.Tools
+	app := Config{
+		Tools:        tools,
+		JSONResponse: &toolbox.JSONResponse{},
+	}
 
 	log.Printf(("Starting broker service in port: %s"), webPort)
 
