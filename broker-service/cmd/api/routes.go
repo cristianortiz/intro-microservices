@@ -25,6 +25,7 @@ func (app *Config) routes() http.Handler {
 	mux.Use(middleware.Heartbeat("/ping"))
 
 	mux.Post("/", app.Broker)
+	//Boker single endpoint to handle request for any other microservices
 	mux.Post("/handle", app.HandleSubmission)
 	return mux
 }

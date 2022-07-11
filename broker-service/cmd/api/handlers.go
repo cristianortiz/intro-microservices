@@ -13,12 +13,13 @@ type RequestPayload struct {
 	Auth   AuthPayload `json:"auth,omitempty"`
 }
 
+//auth type to handle the payload request from auth microservice
 type AuthPayload struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
 
-//Broker handle function
+//Broker handle function to check if broker service is up
 func (app *Config) Broker(w http.ResponseWriter, r *http.Request) {
 
 	payload := toolbox.JSONResponse{
@@ -28,28 +29,30 @@ func (app *Config) Broker(w http.ResponseWriter, r *http.Request) {
 	_ = app.Tools.WriteJSON(w, http.StatusOK, payload)
 }
 
+//Handlesubmission() handler function to handle the request of any microservice
 func (app *Config) HandleSubmission(w http.ResponseWriter, r *http.Request) {
+	//to put the json converted body request
 	var requestPayload RequestPayload
-
+	//read the data in request body and convert into json
 	err := app.Tools.ReadJSON(w, r, &requestPayload)
 	if err != nil {
 		app.Tools.ErrorJSON(w, err)
 	}
-
+	//check wich microservice is requesting the broker
 	switch requestPayload.Action {
 	case "auth":
 		app.authenticate(w, requestPayload.Auth)
 	default:
 		app.Tools.ErrorJSON(w, errors.New("unkown action"))
 	}
-
 }
 
+//authenticate() call auth microservice method with their own payload
 func (app *Config) authenticate(w http.ResponseWriter, a AuthPayload) {
 	//create some JSON w'll send to the auth microservice
 	jsonData, _ := json.MarshalIndent(a, "", "\t")
 
-	//call the service
+	//call the microservice
 	request, err := http.NewRequest("POST", "http://authentication-service/authenticate", bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.Tools.ErrorJSON(w, err)
@@ -62,7 +65,6 @@ func (app *Config) authenticate(w http.ResponseWriter, a AuthPayload) {
 		return
 	}
 	defer response.Body.Close()
-
 	//make sure we get back the correct status code
 	if response.StatusCode == http.StatusUnauthorized {
 		app.Tools.ErrorJSON(w, errors.New("invalid credentials"))
@@ -71,7 +73,6 @@ func (app *Config) authenticate(w http.ResponseWriter, a AuthPayload) {
 		app.Tools.ErrorJSON(w, errors.New("error calling auth service"))
 		return
 	}
-
 	//create a variable we'll read response.body into
 	jsonFromService := app.JSONResponse
 
@@ -81,15 +82,15 @@ func (app *Config) authenticate(w http.ResponseWriter, a AuthPayload) {
 		app.Tools.ErrorJSON(w, err)
 		return
 	}
-
+	//check if the response json is setting with errors
 	if jsonFromService.Error {
 		app.Tools.ErrorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
-
+	//send back to the user the auth payload
 	payload := app.JSONResponse
 	payload.Error = false
-	payload.Message = "Authenticaded!"
+	payload.Message = "Authenticated!"
 	payload.Data = jsonFromService.Data
 
 	app.Tools.WriteJSON(w, http.StatusAccepted, payload)

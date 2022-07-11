@@ -34,7 +34,6 @@ func main() {
 	if conn == nil {
 		log.Panic("Can't connect to Postgres..")
 	}
-
 	// setup config
 	app := Config{
 		DB:           conn,

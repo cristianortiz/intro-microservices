@@ -20,13 +20,13 @@ func (app *Config) Authenticate(w http.ResponseWriter, r *http.Request) {
 	//rquest user data  and validate  againts DB
 	user, err := app.Models.User.GetByEmail(requestPayload.Email)
 	if err != nil {
-		app.Tools.ErrorJSON(w, errors.New("invalid credentials"), http.StatusBadRequest)
+		app.Tools.ErrorJSON(w, errors.New("invalid credentials"), http.StatusUnauthorized)
 		return
 	}
 	//validate password but send back same error msg if is not valid
 	valid, err := user.PasswordMatches(requestPayload.Password)
 	if err != nil || !valid {
-		app.Tools.ErrorJSON(w, errors.New("invalid credentials"), http.StatusBadRequest)
+		app.Tools.ErrorJSON(w, errors.New("invalid credentials"), http.StatusUnauthorized)
 		return
 	}
 	payload := app.JSONResponse
