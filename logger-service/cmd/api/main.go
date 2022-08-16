@@ -2,8 +2,12 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
+	"logger-service/data"
+	"net/http"
 	"time"
+	"toolbox"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -20,6 +24,9 @@ const (
 var client *mongo.Client
 
 type Config struct {
+	Models       data.Models
+	Tools        toolbox.Tools
+	JSONResponse *toolbox.JSONResponse
 }
 
 func main() {
@@ -40,6 +47,26 @@ func main() {
 			panic(err)
 		}
 	}()
+
+	app := Config{
+		Models:       data.New(client),
+		JSONResponse: &toolbox.JSONResponse{},
+	}
+	//start webserver
+	go app.serve()
+}
+
+//server and handlers to logger microservice
+func (app *Config) serve() {
+	srv := &http.Server{
+		Addr:    fmt.Sprintf(":%s", webPort),
+		Handler: app.routes(),
+	}
+
+	err := srv.ListenAndServe()
+	if err != nil {
+		log.Panic(err)
+	}
 }
 
 //connectToMongo() create a mongoDB client options and the use it to create and return
