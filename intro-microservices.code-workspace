@@ -13,9 +13,6 @@
       "path": "authentication-service"
     },
     {
-      "path": "toolbox"
-    },
-    {
       "path": "logger-service"
     }
   ],
