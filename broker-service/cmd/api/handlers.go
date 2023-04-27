@@ -14,13 +14,13 @@ type RequestPayload struct {
 	Auth   AuthPayload `json:"auth,omitempty"`
 }
 
-//auth type to handle the payload request from auth microservice
+// auth type to handle the payload request from auth microservice
 type AuthPayload struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
 
-//Broker handle function to check if broker service is up
+// Broker handle function to check if broker service is up
 func (app *Config) Broker(w http.ResponseWriter, r *http.Request) {
 
 	payload := toolbox.JSONResponse{
@@ -30,7 +30,7 @@ func (app *Config) Broker(w http.ResponseWriter, r *http.Request) {
 	_ = app.Tools.WriteJSON(w, http.StatusOK, payload)
 }
 
-//Handlesubmission() handler function to handle the request of any microservice
+// Handlesubmission() handler function to handle the request of any microservice
 func (app *Config) HandleSubmission(w http.ResponseWriter, r *http.Request) {
 	//to put the json converted body request
 	var requestPayload RequestPayload
@@ -48,9 +48,9 @@ func (app *Config) HandleSubmission(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-//authenticate() call auth microservice method with their own payload
+// authenticate() call auth microservice method with their own payload
 func (app *Config) authenticate(w http.ResponseWriter, a AuthPayload) {
-	//create some JSON w'll send to the auth microservice
+	//create some JSON we'll send to the auth microservice
 	jsonData, _ := json.MarshalIndent(a, "", "\t")
 
 	//call the microservice
@@ -75,7 +75,7 @@ func (app *Config) authenticate(w http.ResponseWriter, a AuthPayload) {
 		return
 	}
 	//create a variable we'll read response.body into
-	jsonFromService := app.JSONResponse
+	var jsonFromService toolbox.JSONResponse
 
 	//decode the json from the auth service
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
@@ -89,7 +89,7 @@ func (app *Config) authenticate(w http.ResponseWriter, a AuthPayload) {
 		return
 	}
 	//send back to the user the auth payload
-	payload := app.JSONResponse
+	var payload toolbox.JSONResponse
 	payload.Error = false
 	payload.Message = "Authenticated!"
 	payload.Data = jsonFromService.Data

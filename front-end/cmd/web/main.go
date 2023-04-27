@@ -19,7 +19,7 @@ func main() {
 	}
 }
 
-//render() use golanf template library to render simple web app using partials
+//render() use golang template library to render simple web app using partials
 func render(w http.ResponseWriter, t string) {
 
 	partials := []string{

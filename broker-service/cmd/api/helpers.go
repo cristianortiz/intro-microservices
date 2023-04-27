@@ -7,21 +7,19 @@ import (
 	"net/http"
 )
 
-//struct to send back response as a JSON
+// struct to send back response as a JSON
 type jsonResponse struct {
 	Error   bool   `json:"error"`
 	Message string `json:"message"`
 	//thanks to go 1.18 generics
-	Data any `json:"data,omitempty"`
+	Data any `json:"da       ta,omitempty"`
 }
 
 // readJson receiver function to Config type to reading JSON
 func (app *Config) readJSON(w http.ResponseWriter, r *http.Request, data any) error {
 	// one megabyte limitation for upload json file
 	maxBytes := 1048576
-
 	r.Body = http.MaxBytesReader(w, r.Body, int64(maxBytes))
-
 	dec := json.NewDecoder(r.Body)
 	err := dec.Decode(data)
 	if err != nil {

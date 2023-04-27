@@ -11,8 +11,8 @@ import (
 const webPort = "80"
 
 type Config struct {
-	Tools        toolbox.Tools
-	JSONResponse *toolbox.JSONResponse
+	Tools        toolbox.Tools         //access for toolbox methods
+	JSONResponse *toolbox.JSONResponse //toolbox struct
 }
 
 func main() {

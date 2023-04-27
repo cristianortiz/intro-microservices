@@ -8,7 +8,8 @@ import (
 	"net/http"
 	"os"
 	"time"
-	"toolbox"
+
+	"github.com/cristianortiz/toolbox"
 
 	_ "github.com/jackc/pgconn"
 	_ "github.com/jackc/pgx/v4"
@@ -27,7 +28,7 @@ type Config struct {
 }
 
 func main() {
-	log.Println("Starting authentication service")
+	log.Println("Starting authentication service..")
 
 	// connect to DB
 	conn := connectToDB()
@@ -52,7 +53,7 @@ func main() {
 	}
 }
 
-//openDB take a string connection and start connection to postgres DB,
+// openDB take a string defined connection and open a  connection to postgres DB,
 func openDB(dsn string) (*sql.DB, error) {
 	db, err := sql.Open("pgx", dsn)
 	if err != nil {
@@ -65,9 +66,10 @@ func openDB(dsn string) (*sql.DB, error) {
 	return db, nil
 }
 
-//connectToDB checks if the docker postgres container is up and running before open the DB connection
+// connectToDB checks if the docker postgres container is up and running before open the DB connection
 func connectToDB() *sql.DB {
 	dsn := os.Getenv("DSN")
+	//infinite loop, keep going until the postgres container is connected
 	for {
 		connection, err := openDB(dsn)
 		if err != nil {

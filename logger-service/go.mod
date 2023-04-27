@@ -3,13 +3,14 @@ module logger-service
 go 1.18
 
 require (
+	github.com/cristianortiz/toolbox v1.0.0
 	github.com/go-chi/cors v1.2.1
 	go.mongodb.org/mongo-driver v1.10.0
 )
 
 require (
-	github.com/gabriel-vasile/mimetype v1.4.0 // indirect
-	golang.org/x/net v0.0.0-20211112202133-69e39bad7dc2 // indirect
+	github.com/gabriel-vasile/mimetype v1.4.1 // indirect
+	golang.org/x/net v0.0.0-20220624214902-1bab6f366d9e // indirect
 )
 
 require (
@@ -25,8 +26,5 @@ require (
 	golang.org/x/crypto v0.0.0-20220622213112-05595931fe9d // indirect
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
 	golang.org/x/text v0.3.7 // indirect
-	toolbox v0.0.0
 
 )
-
-replace toolbox v0.0.0 => ../toolbox

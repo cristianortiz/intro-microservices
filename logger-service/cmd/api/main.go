@@ -7,8 +7,8 @@ import (
 	"logger-service/data"
 	"net/http"
 	"time"
-	"toolbox"
 
+	"github.com/cristianortiz/toolbox"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
