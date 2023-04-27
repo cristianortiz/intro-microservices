@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	webPort  = "80"   // to listen
+	webPort  = "80"   // to listen inciming request
 	rpcPort  = "5001" // listen RPC calls
 	mongoURL = "mongodb://mongo:27017"
 	grpcPort = "50001" //to listen gRPC calls
@@ -37,7 +37,7 @@ func main() {
 	}
 	client = mongoClient
 
-	//create a context in order to disconnect from DB
+	//create a context in order to disconnect from mongo
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	//as usual when we are working with the context, defer cancel..
 	defer cancel()
@@ -56,7 +56,7 @@ func main() {
 	go app.serve()
 }
 
-//server and handlers to logger microservice
+// server and handlers to logger microservice
 func (app *Config) serve() {
 	srv := &http.Server{
 		Addr:    fmt.Sprintf(":%s", webPort),
@@ -69,7 +69,7 @@ func (app *Config) serve() {
 	}
 }
 
-//connectToMongo() create a mongoDB client options and the use it to create and return
+// connectToMongo() create a mongoDB client options and  use it to create and return
 // a mongoDB connect client type
 func connectToMongo() (*mongo.Client, error) {
 	//create connection options
@@ -81,7 +81,7 @@ func connectToMongo() (*mongo.Client, error) {
 	//connecto to DB
 	conn, err := mongo.Connect(context.TODO(), clientOptions)
 	if err != nil {
-		log.Println("Error connecting DB", err)
+		log.Println("Error connecting MongoDB", err)
 		return nil, err
 	}
 	return conn, nil
