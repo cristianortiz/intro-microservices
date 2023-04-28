@@ -25,7 +25,7 @@ type Models struct {
 	LogEntry LogEntry
 }
 
-//type for the data to store in mongo
+// type for the data to store in mongo
 type LogEntry struct {
 	ID        string    `bson:"_id,omitempty" json:"id,omitempty"`
 	Name      string    `bson:"name" json:"name"`
@@ -34,7 +34,7 @@ type LogEntry struct {
 	UpdatedAt time.Time `bson:"updated_at" json:"updated_at"`
 }
 
-//Insert() will receive an entryLog type and insert a new entry log in logs collection
+// Insert() will receive an entryLog type and insert a new entry log in logs collection
 func (l *LogEntry) Insert(entry LogEntry) error {
 	collection := client.Database("logs").Collection("logs")
 	_, err := collection.InsertOne(context.TODO(), LogEntry{
@@ -51,7 +51,7 @@ func (l *LogEntry) Insert(entry LogEntry) error {
 	return nil
 }
 
-//Update() will update an existing entryLog from logs collecion using the receiver id
+// Update() will update an existing entryLog from logs collecion using the receiver id
 func (l *LogEntry) Update() (*mongo.UpdateResult, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
@@ -80,7 +80,7 @@ func (l *LogEntry) Update() (*mongo.UpdateResult, error) {
 	return result, nil
 }
 
-//All return all the register in logs database sorted by creation date
+// All return all the register in logs database sorted by creation date
 func (l *LogEntry) All() ([]*LogEntry, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
@@ -104,14 +104,13 @@ func (l *LogEntry) All() ([]*LogEntry, error) {
 		if err != nil {
 			log.Println("Error decoding log into slice: ", err)
 			return nil, err
-		} else {
-			logs = append(logs, &item)
 		}
+		logs = append(logs, &item)
 	}
 	return logs, nil
 }
 
-//GetOne return a specif log entry by id
+// GetOne return a specif log entry by id
 func (l *LogEntry) GetOne(id string) (*LogEntry, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
@@ -129,7 +128,7 @@ func (l *LogEntry) GetOne(id string) (*LogEntry, error) {
 	return &entry, nil
 }
 
-//DropCollection drops an entire collectcion of logs from db
+// DropCollection drops an entire collectcion of logs from db
 func (l *LogEntry) DropCollection() error {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
