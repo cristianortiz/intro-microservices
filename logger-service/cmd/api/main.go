@@ -17,6 +17,7 @@ const (
 	webPort  = "80"   // to listen inciming request
 	rpcPort  = "5001" // listen RPC calls
 	mongoURL = "mongodb://mongo:27017"
+	// mongoURL = "mongodb://localhost:27017" only to test if logger server works before  adding it to docker-compose
 	grpcPort = "50001" //to listen gRPC calls
 
 )
@@ -52,22 +53,32 @@ func main() {
 		Models:       data.New(client),
 		JSONResponse: &toolbox.JSONResponse{},
 	}
-	//start webserver
-	go app.serve()
-}
-
-// server and handlers to logger microservice
-func (app *Config) serve() {
+	//start server for logger service
+	//go app.serve()
+	log.Println("Starting service in port", webPort)
 	srv := &http.Server{
 		Addr:    fmt.Sprintf(":%s", webPort),
 		Handler: app.routes(),
 	}
 
-	err := srv.ListenAndServe()
+	err = srv.ListenAndServe()
 	if err != nil {
 		log.Panic(err)
 	}
 }
+
+// server and handlers to logger microservice
+// func (app *Config) serve() {
+// 	srv := &http.Server{
+// 		Addr:    fmt.Sprintf(":%s", webPort),
+// 		Handler: app.routes(),
+// 	}
+
+// 	err := srv.ListenAndServe()
+// 	if err != nil {
+// 		log.Panic(err)
+// 	}
+// }
 
 // connectToMongo() create a mongoDB client options and  use it to create and return
 // a mongoDB connect client type

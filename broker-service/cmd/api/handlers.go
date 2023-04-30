@@ -12,12 +12,19 @@ import (
 type RequestPayload struct {
 	Action string      `json:"action"`
 	Auth   AuthPayload `json:"auth,omitempty"`
+	Log    LogPayload  `json:"log,omitempty"`
 }
 
 // auth type to handle the payload request from auth microservice
 type AuthPayload struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
+}
+
+// logPayload type to handle the payload request from logger microservice
+type LogPayload struct {
+	Name string `json:"name"`
+	Data string `json:"data"`
 }
 
 // Broker handle function to check if broker service is up
@@ -43,6 +50,8 @@ func (app *Config) HandleSubmission(w http.ResponseWriter, r *http.Request) {
 	switch requestPayload.Action {
 	case "auth":
 		app.authenticate(w, requestPayload.Auth)
+	case "log":
+		app.LogItem(w, requestPayload.Log)
 	default:
 		app.Tools.ErrorJSON(w, errors.New("unkown action"))
 	}
@@ -89,11 +98,39 @@ func (app *Config) authenticate(w http.ResponseWriter, a AuthPayload) {
 		return
 	}
 	//send back to the user the auth payload
-	var payload toolbox.JSONResponse
+	payload := app.JSONResponse
 	payload.Error = false
 	payload.Message = "Authenticated!"
 	payload.Data = jsonFromService.Data
 
+	app.Tools.WriteJSON(w, http.StatusAccepted, payload)
+
+}
+func (app *Config) LogItem(w http.ResponseWriter, entry LogPayload) {
+
+	jsonData, _ := json.MarshalIndent(entry, "", "\t")
+	logServiceURL := "http://logger-service/log"
+
+	request, err := http.NewRequest("POST", logServiceURL, bytes.NewBuffer(jsonData))
+	if err != nil {
+		app.Tools.ErrorJSON(w, err)
+		return
+	}
+	request.Header.Set("Content-type", "application/json")
+	client := &http.Client{}
+	response, err := client.Do(request)
+	if err != nil {
+		app.Tools.ErrorJSON(w, err)
+		return
+	}
+	defer response.Body.Close()
+	if response.StatusCode != http.StatusAccepted {
+		app.Tools.ErrorJSON(w, err)
+		return
+	}
+	payload := app.JSONResponse
+	payload.Error = false
+	payload.Message = "logged"
 	app.Tools.WriteJSON(w, http.StatusAccepted, payload)
 
 }
