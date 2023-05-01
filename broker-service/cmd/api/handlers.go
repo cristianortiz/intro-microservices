@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 
 	"github.com/cristianortiz/toolbox"
@@ -15,13 +16,13 @@ type RequestPayload struct {
 	Log    LogPayload  `json:"log,omitempty"`
 }
 
-// auth type to handle the payload request from auth microservice
+// auth type to handle the payload request for auth microservice
 type AuthPayload struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
 
-// logPayload type to handle the payload request from logger microservice
+// logPayload type to handle the payload request for logger microservice
 type LogPayload struct {
 	Name string `json:"name"`
 	Data string `json:"data"`
@@ -47,6 +48,7 @@ func (app *Config) HandleSubmission(w http.ResponseWriter, r *http.Request) {
 		app.Tools.ErrorJSON(w, err)
 	}
 	//check wich microservice is requesting the broker
+	fmt.Println(requestPayload.Action)
 	switch requestPayload.Action {
 	case "auth":
 		app.authenticate(w, requestPayload.Auth)
@@ -106,6 +108,8 @@ func (app *Config) authenticate(w http.ResponseWriter, a AuthPayload) {
 	app.Tools.WriteJSON(w, http.StatusAccepted, payload)
 
 }
+
+// LogItem() call logger microservice method with their own payload
 func (app *Config) LogItem(w http.ResponseWriter, entry LogPayload) {
 
 	jsonData, _ := json.MarshalIndent(entry, "", "\t")
