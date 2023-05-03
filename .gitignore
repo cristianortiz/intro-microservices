@@ -1,0 +1,6 @@
+project/db-data/*
+authentication-service/authApp
+front-end/frontApp
+logger-service/loggerServiceApp
+broker-service/brokerApp
+mail-service/mailServiceApp
