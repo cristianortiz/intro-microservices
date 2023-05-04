@@ -5,6 +5,6 @@ FROM alpine:latest
 RUN mkdir /app
 
 COPY mailServiceApp /app
-COPY templates /templates
+COPY templates /templates   
 
 CMD [ "/app/mailServiceApp" ]
