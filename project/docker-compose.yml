@@ -25,6 +25,14 @@ services:
     environment:
       DSN: "host=postgres port=5432 user=postgres password=password dbname=users sslmode=disable timezone=UTC connect_timeout=5"
 
+  listener-service:
+    build:
+      context: ./../listener-service
+      dockerfile: ./../listener-service/listener-service.dockerfile
+    deploy:
+      mode: replicated
+      replicas: 1
+
   postgres:
     image: "postgres:14.2"
     ports:
@@ -76,14 +84,14 @@ services:
       MAIL_USERNAME: ""
       MAIL_PASSWORD: ""
       FROM_ADDRESS: john.smith@example.com
-      FROM_NAME: "John Smith" 
+      FROM_NAME: "John Smith"
 
   mailhog:
     image: "jcalonso/mailhog:latest"
     ports:
       - "1025:1025"
       - "8025:8025"
-  
+
   rabbitmq:
     image: "rabbitmq:3.9-alpine"
     ports:
