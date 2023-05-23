@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"log"
 	"logger-service/data"
+	"net"
 	"net/http"
+	"net/rpc"
 	"time"
 
 	"github.com/cristianortiz/toolbox"
@@ -53,8 +55,12 @@ func main() {
 		Models:       data.New(client),
 		JSONResponse: &toolbox.JSONResponse{},
 	}
-	//start server for logger service
-	//go app.serve()
+	//start RPC server for logger service
+	//register the RPC server
+	err = rpc.Register(new(RPCServer))
+	go app.rpcListen()
+
+	//start web server
 	log.Println("Starting logger service in port", webPort)
 	srv := &http.Server{
 		Addr:    fmt.Sprintf(":%s", webPort),
@@ -67,18 +73,23 @@ func main() {
 	}
 }
 
-// server and handlers to logger microservice
-// func (app *Config) serve() {
-// 	srv := &http.Server{
-// 		Addr:    fmt.Sprintf(":%s", webPort),
-// 		Handler: app.routes(),
-// 	}
-
-// 	err := srv.ListenAndServe()
-// 	if err != nil {
-// 		log.Panic(err)
-// 	}
-// }
+// start to listen for rcp connection
+func (app *Config) rpcListen() error {
+	log.Println("Starting RPC server on port", rpcPort)
+	//listen on RPC with standar library
+	listen, err := net.Listen("tcp", fmt.Sprintf("0.0.0.0:%s", rpcPort))
+	if err != nil {
+		return err
+	}
+	defer listen.Close()
+	for {
+		rpcConn, err := listen.Accept()
+		if err != nil {
+			continue
+		}
+		go rpc.ServeConn(rpcConn)
+	}
+}
 
 // connectToMongo() create a mongoDB client options and  use it to create and return
 // a mongoDB connect client type
