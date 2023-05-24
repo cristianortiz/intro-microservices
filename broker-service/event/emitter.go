@@ -11,6 +11,7 @@ type Emitter struct {
 	connection *amqp.Connection
 }
 
+// open a connection channel to publish messages
 func (e *Emitter) setup() error {
 	channel, err := e.connection.Channel()
 	if err != nil {
