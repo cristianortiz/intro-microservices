@@ -17,5 +17,5 @@ message LogRequest {
  }
 
  service LogService {
-    rpc WriterLog(LogRequest) returns (LogResponse);
+    rpc WriteLog(LogRequest) returns (LogResponse);
  }
